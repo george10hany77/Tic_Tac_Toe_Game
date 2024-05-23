@@ -66,7 +66,7 @@ public class CLIControllerTest {
         controller.checkStatus();
         assertEquals(GameStatus.PLAYER_O_WINS, controller.getStatus());
 
-        // Test diagonal winning condition for Player X
+        // Test Left diagonal winning condition for Player X
         controller = new CLIController();
         controller.makeMove(0, 0); // X
         controller.makeMove(0, 1); // O
@@ -75,6 +75,18 @@ public class CLIControllerTest {
         controller.makeMove(2, 2); // X
         controller.checkStatus();
         assertEquals(GameStatus.PLAYER_X_WINS, controller.getStatus());
+
+        // Test Right diagonal winning condition for Player X
+        controller = new CLIController();
+        controller.makeMove(0, 2); // X
+        controller.makeMove(0, 1); // O
+        controller.makeMove(1, 1); // X
+        controller.makeMove(0, 0); // O
+        controller.makeMove(2, 0); // X
+        System.out.println(controller.getBoard());
+        controller.checkStatus();
+        assertEquals(GameStatus.PLAYER_X_WINS, controller.getStatus());
+
     }
 
     // Tests the draw condition.

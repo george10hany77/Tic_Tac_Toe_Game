@@ -50,8 +50,8 @@ public class CLIController extends GameController {
 
     @Override
     public boolean makeMove(int row, int col) {
-        boolean moveRes = board.markCell(row, col, player.getSymbol());
-        if(!moveRes) // if not successful don't switch players
+        boolean isMoveDone = board.markCell(row, col, player.getSymbol());
+        if(!isMoveDone) // if not successful don't switch players
             return false;
         switchPlayer();
         return true;
@@ -116,7 +116,7 @@ public class CLIController extends GameController {
         // Check the diagonals
         for (int n = 0; n < 2; n++) {
             boolean isAllXs = true, isAllOs = true;
-            // Right diagonal
+            // Left diagonal
             for (int i = 0; n == 0 && i < board.getSize(); i++) {
                 Symbol currSymbol = board.getBoard()[i][i];
                 if (currSymbol != null) {
@@ -139,9 +139,9 @@ public class CLIController extends GameController {
                 status = GameStatus.PLAYER_O_WINS;
                 return;
             }
-            // Left diagonal
-            for (int i = board.getSize()-1; n == 1 && i >= 0; i--) {
-                Symbol currSymbol = board.getBoard()[i][i];
+            // Right diagonal
+            for (int i = 0; n == 1 && i < board.getSize(); i++) {
+                Symbol currSymbol = board.getBoard()[(board.getSize()-1) - i][i];
                 if (currSymbol != null) {
                     if (currSymbol == Symbol.X) {
                         isAllOs = false;
