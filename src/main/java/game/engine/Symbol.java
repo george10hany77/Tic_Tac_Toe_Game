@@ -1,7 +1,7 @@
 package game.engine;
 
 public enum Symbol {
-    X(Colors.RED), O(Colors.CYAN);
+    X(Colors.RED), O(Colors.CYAN), AI(Colors.GREEN);
 
     Colors SymbolColor;
     Symbol(Colors c) {

@@ -1,15 +1,17 @@
 package game.engine;
 
+import game.AI.AIPlayer;
 import game.AI.RandomAIPlayer;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.Scanner;
 
 public class CLIController extends GameController {
     private Player player; // the first move will be for X;
-    private Player playerAI; // the first AI move will be for O;
+    private AIPlayer playerAI; // the first AI move will be for O;
 
-    private Board board = new Board(3); // init the board;
+    public Board board = new Board(3); // init the board;
     GameStatus status = GameStatus.IN_PROGRESS;
     private Scanner sc = new Scanner(System.in);
 
@@ -34,7 +36,26 @@ public class CLIController extends GameController {
     }
 
     public void gameLoopAI(){
-
+        GameStatus gameStatus = null;
+        while (getStatus() == GameStatus.IN_PROGRESS) {
+            System.out.println("AI will Make a Move !");
+            makeAIMove();
+            if (getStatus() != GameStatus.IN_PROGRESS)
+                break;
+            System.out.println(board);
+            String input = "";
+            Point point = null;
+            do {
+                System.out.println("Enter cell position: ");
+                input = sc.nextLine();
+                if (isValidInput(input))
+                    point = convertNumToPoint(Integer.parseInt(input));
+            } while (!isValidInput(input) || point == null || !makeHumanMove(point));
+            gameStatus = getStatus();
+        }
+        System.out.println(board);
+        if (gameStatus != null)
+            System.out.println("\n" +status.getName() + " !!!");
     }
 
     public void gameLoop(){
@@ -46,13 +67,14 @@ public class CLIController extends GameController {
             do {
                 System.out.println("Enter cell position: ");
                 input = sc.nextLine();
-                point = convertNumToPoint(Integer.parseInt(input));
+                if (isValidInput(input))
+                    point = convertNumToPoint(Integer.parseInt(input));
             } while (!isValidInput(input) || point == null || !makeMove(point.x, point.y));
             gameStatus = getStatus();
         }
         System.out.println(board);
         if (gameStatus != null)
-            System.out.println("\n" +gameStatus.getName() + " !!!");
+            System.out.println("\n" +status.getName() + " !!!");
     }
 
     private Point convertNumToPoint(int num){
@@ -80,6 +102,20 @@ public class CLIController extends GameController {
         switchPlayer();
         return true;
     }
+
+    public boolean makeAIMove(){
+        Random random = new Random();
+        Point[] possiblePoints = playerAI.getPossibleMoves(board);
+        if (possiblePoints.length == 0)
+            return false;
+        Point move = possiblePoints[random.nextInt(possiblePoints.length)];
+        return board.markCell(move.x, move.y, playerAI.getSymbol());
+    }
+
+    public boolean makeHumanMove(Point move){
+        return board.markCell(move.x, move.y, player.getSymbol());
+    }
+
 
     @Override
     public void checkStatus() {
@@ -203,6 +239,14 @@ public class CLIController extends GameController {
         }
     }
 
+    public void switchAIPlayer() {
+        if (player.getSymbol() == Symbol.X){
+            player.setSymbol(Symbol.O);
+        }else if (player.getSymbol() == Symbol.O){
+            player.setSymbol(Symbol.X);
+        }
+    }
+
     @Override
     public GameStatus getStatus() {
         checkStatus();
@@ -216,6 +260,6 @@ public class CLIController extends GameController {
 
     @Override
     public Board getBoard() {
-        return this.board;
+        return board;
     }
 }
