@@ -1,16 +1,40 @@
 package game.engine;
 
+import game.AI.RandomAIPlayer;
+
 import java.awt.*;
 import java.util.Scanner;
 
 public class CLIController extends GameController {
-    private Player player = new Player(Symbol.X); // the first move will be for X;
+    private Player player; // the first move will be for X;
+    private Player playerAI; // the first AI move will be for O;
+
     private Board board = new Board(3); // init the board;
-    GameStatus status = GameStatus.IN_PROGRESS;;
+    GameStatus status = GameStatus.IN_PROGRESS;
     private Scanner sc = new Scanner(System.in);
+
+    public CLIController(){
+        String input;
+        do {
+            System.out.println("Human to Human : 'H' --- Human to AI : A ");
+            input = sc.nextLine();
+        }while (input.length() != 1 || (input.charAt(0) != 'H' && input.charAt(0) != 'A'));
+        player = new HumanPlayer(Symbol.X);
+        if (input.equals("A")){
+            playerAI = new RandomAIPlayer(Symbol.O);
+        }
+    }
     @Override
     public void startGame() {
-        gameLoop();
+        if (playerAI == null) { // that means the AI player is not initialized ,so it is only humans.
+            gameLoop();
+        }else {
+            gameLoopAI();
+        }
+    }
+
+    public void gameLoopAI(){
+
     }
 
     public void gameLoop(){

@@ -1,6 +1,8 @@
 package game.engine;
 
-public class Player {
+import java.awt.*;
+
+public abstract class Player {
     private String name;
     private Symbol symbol;
     public Player(Symbol symbol){
