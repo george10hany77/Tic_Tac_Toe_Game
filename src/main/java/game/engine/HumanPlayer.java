@@ -8,4 +8,8 @@ public class HumanPlayer extends Player{
         super(symbol);
     }
 
+    @Override
+    public boolean play(Board board, Point move) {
+        return board.markCell(move.x, move.y, this.getSymbol());
+    }
 }

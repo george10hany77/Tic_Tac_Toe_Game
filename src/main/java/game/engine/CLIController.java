@@ -1,6 +1,7 @@
 package game.engine;
 
 import game.AI.AIPlayer;
+import game.AI.MinimaxAIPlayer;
 import game.AI.RandomAIPlayer;
 
 import java.awt.*;
@@ -11,19 +12,26 @@ public class CLIController extends GameController {
     private Player player; // the first move will be for X;
     private AIPlayer playerAI; // the first AI move will be for O;
 
-    public Board board = new Board(3); // init the board;
+    public Board board;
     GameStatus status = GameStatus.IN_PROGRESS;
     private Scanner sc = new Scanner(System.in);
 
     public CLIController(){
+        board = new Board(3); // init the board;
         String input;
         do {
-            System.out.println("Human to Human : 'H' --- Human to AI : A ");
+            System.out.println("Human to Human : 'H' --- Human to AI : 'A' ");
             input = sc.nextLine();
         }while (input.length() != 1 || (input.charAt(0) != 'H' && input.charAt(0) != 'A'));
         player = new HumanPlayer(Symbol.X);
         if (input.equals("A")){
-            playerAI = new RandomAIPlayer(Symbol.O);
+            do {
+                System.out.println("Random AI 'R' --- Minimax AI : 'M' ");
+                input = sc.nextLine();
+            }while (input.length() != 1 || (input.charAt(0) != 'R' && input.charAt(0) != 'M'));
+            if (input.equals("R"))
+                playerAI = new RandomAIPlayer(Symbol.O);
+            else playerAI = new MinimaxAIPlayer(Symbol.O);
         }
     }
     @Override
@@ -31,15 +39,18 @@ public class CLIController extends GameController {
         if (playerAI == null) { // that means the AI player is not initialized ,so it is only humans.
             gameLoop();
         }else {
-            gameLoopAI();
+            gameLoopAI2();
         }
     }
 
-    public void gameLoopAI(){
+    public void gameLoopAI2() {
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
+            if (board.isFull()) {
+                break;
+            }
             System.out.println("AI will Make a Move !");
-            makeAIMove();
+            playerAI.play(board);
             if (getStatus() != GameStatus.IN_PROGRESS)
                 break;
             System.out.println(board);
@@ -50,7 +61,30 @@ public class CLIController extends GameController {
                 input = sc.nextLine();
                 if (isValidInput(input))
                     point = convertNumToPoint(Integer.parseInt(input));
-            } while (!isValidInput(input) || point == null || !makeHumanMove(point));
+            } while (!isValidInput(input) || point == null || !player.play(board, point));
+            gameStatus = getStatus();
+        }
+        System.out.println(board);
+        if (gameStatus != null)
+            System.out.println("\n" + status.getName() + " !!!");
+    }
+
+    public void gameLoopAI(){
+        GameStatus gameStatus = null;
+        while (getStatus() == GameStatus.IN_PROGRESS) {
+            System.out.println("AI will Make a Move !");
+            playerAI.play(board);
+            if (getStatus() != GameStatus.IN_PROGRESS)
+                break;
+            System.out.println(board);
+            String input = "";
+            Point point = null;
+            do {
+                System.out.println("Enter cell position: ");
+                input = sc.nextLine();
+                if (isValidInput(input))
+                    point = convertNumToPoint(Integer.parseInt(input));
+            } while (!isValidInput(input) || point == null || !player.play(board, point));
             gameStatus = getStatus();
         }
         System.out.println(board);
@@ -103,18 +137,18 @@ public class CLIController extends GameController {
         return true;
     }
 
-    public boolean makeAIMove(){
-        Random random = new Random();
-        Point[] possiblePoints = playerAI.getPossibleMoves(board);
-        if (possiblePoints.length == 0)
-            return false;
-        Point move = possiblePoints[random.nextInt(possiblePoints.length)];
-        return board.markCell(move.x, move.y, playerAI.getSymbol());
-    }
+//    public boolean makeAIMove(){
+//        Random random = new Random();
+//        Point[] possiblePoints = playerAI.getPossibleMoves(board);
+//        if (possiblePoints.length == 0)
+//            return false;
+//        Point move = possiblePoints[random.nextInt(possiblePoints.length)];
+//        return board.markCell(move.x, move.y, playerAI.getSymbol());
+//    }
 
-    public boolean makeHumanMove(Point move){
-        return board.markCell(move.x, move.y, player.getSymbol());
-    }
+//    public boolean makeHumanMove(Point move){
+//        return board.markCell(move.x, move.y, player.getSymbol());
+//    }
 
 
     @Override

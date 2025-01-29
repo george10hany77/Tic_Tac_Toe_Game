@@ -15,6 +15,21 @@ public class RandomAIPlayer extends AIPlayer {
         super(symbol);
     }
 
+    @Override // not usable
+    public boolean play(Board board, Point move) {
+        return false;
+    }
+
+    @Override
+    public boolean play(Board board) {
+        Random random = new Random();
+        Point[] possiblePoints = this.getPossibleMoves(board);
+        if (possiblePoints.length == 0)
+            return false;
+        Point move = possiblePoints[random.nextInt(possiblePoints.length)];
+        return board.markCell(move.x, move.y, this.getSymbol());
+    }
+
     public Point[] getPossibleMoves(Board board) {
         if (board == null){
             System.out.println("Board is null");

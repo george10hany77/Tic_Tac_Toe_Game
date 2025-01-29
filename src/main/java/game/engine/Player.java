@@ -24,4 +24,5 @@ public abstract class Player {
     public void setSymbol(Symbol symbol){
         this.symbol = symbol;
     }
+    public abstract boolean play(Board board, Point move);
 }
