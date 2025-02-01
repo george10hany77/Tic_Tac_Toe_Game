@@ -27,7 +27,7 @@ public class RandomAIPlayer extends AIPlayer {
         if (possiblePoints.length == 0)
             return false;
         Point move = possiblePoints[random.nextInt(possiblePoints.length)];
-        return board.markCell(move.x, move.y, this.getSymbol());
+        return board.markCell(move.y, move.x, this.getSymbol());
     }
 
     public Point[] getPossibleMoves(Board board) {

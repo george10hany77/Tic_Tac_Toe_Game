@@ -4,6 +4,16 @@ import game.engine.Board;
 import game.engine.Symbol;
 
 import java.awt.*;
+import java.util.ArrayList;
+
+class GPoint{
+    public Point point;
+    public int score;
+    public GPoint(Point point, int score){
+        this.point = point;
+        this.score = score;
+    }
+}
 
 public class MinimaxAIPlayer extends AIPlayer {
 
@@ -19,16 +29,30 @@ public class MinimaxAIPlayer extends AIPlayer {
     @Override
     public boolean play(Board board) {
         try {
-            int[] bestMove = getBestMove(board.clone());
+            int[] bestMove = getBestMove2(board.clone());
             return board.markCell(bestMove[0], bestMove[1], this.getSymbol());
         }catch (Exception e){
             System.out.println("EXCEPTION");
             return false;
         }
     }
+
     @Override
     public Point[] getPossibleMoves(Board board) {
-        return new Point[0];
+        if (board == null){
+            System.out.println("Board is null");
+            return new Point[0];
+        }
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+                if (board.getBoard()[i][j] != Symbol.X && board.getBoard()[i][j] != Symbol.O){
+                    points.add(new Point(i, j));
+                }
+            }
+        }
+        Point[] pointsArr = new Point[points.size()];
+        return points.toArray(pointsArr);
     }
 
     private int[] getBestMove(Board board) {
@@ -51,6 +75,39 @@ public class MinimaxAIPlayer extends AIPlayer {
             }
         }
         return bestMove;
+    }
+
+    public int miniMax2 (Board board, GPoint[] gPoints,int index) throws CloneNotSupportedException {
+        Symbol winner = board.checkWinner();
+        if (winner == Symbol.X) return -10;
+        if (winner == Symbol.O) return 10;
+        if (board.isFull()) return 0;
+
+        Point[] moves = getPossibleMoves(board);
+        for (int i = 0; i < moves.length; i++) {
+            board.markCell(moves[i].y, moves[i].x, this.getSymbol());
+            gPoints[index].score += miniMax2(board.clone(), gPoints, index);
+        }
+        return 0;
+    }
+
+    public int[] getBestMove2(Board board) throws CloneNotSupportedException {
+        Point[] moves = getPossibleMoves(board);
+        GPoint[] gPoints = new GPoint[moves.length];
+        for (int i = 0; i < moves.length; i++) {
+            gPoints[i] = new GPoint(new Point(), 0);
+        }
+        miniMax2(board, gPoints, 0);
+        int maxScore = Integer.MIN_VALUE;
+        GPoint maxGpoint = null;
+        for (int i = 0; i < gPoints.length; i++) {
+            if (gPoints[i].score > maxScore) {
+                maxScore = gPoints[i].score;
+                maxGpoint = gPoints[i];
+            }
+        }
+        int[] res = {maxGpoint.point.y, maxGpoint.point.x};
+        return res;
     }
 
     private int minimax(Board board, int depth, boolean isMaximizing) {
