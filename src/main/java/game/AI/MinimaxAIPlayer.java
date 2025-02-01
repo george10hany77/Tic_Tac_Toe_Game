@@ -77,25 +77,6 @@ public class MinimaxAIPlayer extends AIPlayer {
         return bestMove;
     }
 
-    public int miniMax2 (Board board, GPoint[] gPoints, int index, boolean isAI) throws CloneNotSupportedException {
-        Symbol winner = board.checkWinner();
-        if (winner == Symbol.X) return -10;
-        if (winner == Symbol.O) return 10;
-        if (board.isFull()) return 0;
-
-        Point[] moves = getPossibleMoves(board);
-        for (int i = 0; i < moves.length; i++) {
-            Board newBoard = board.clone();
-            if (isAI)
-                newBoard.markCell(moves[i].x, moves[i].y, this.getSymbol());
-            else
-                newBoard.markCell(moves[i].x, moves[i].y, this.getOtherSymbol());
-            gPoints[index].score += miniMax2(newBoard, gPoints, index, !isAI);
-        }
-
-        return 0;
-    }
-
     public int[] getBestMove2(Board board) throws CloneNotSupportedException {
         Point[] moves = getPossibleMoves(board);
         GPoint[] gPoints = new GPoint[moves.length];
@@ -103,7 +84,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             gPoints[i] = new GPoint(new Point(moves[i].x, moves[i].y), 0);
         }
         for (int i = 0; i < gPoints.length; i++) {
-            gPoints[i].score += miniMax2(board, gPoints, i, true);
+            miniMax2(board.clone(), gPoints, i, true);
         }
         int maxScore = Integer.MIN_VALUE;
         GPoint maxGpoint = null;
@@ -115,6 +96,29 @@ public class MinimaxAIPlayer extends AIPlayer {
         }
         int[] res = {maxGpoint.point.x, maxGpoint.point.y};
         return res;
+    }
+
+    public int miniMax2 (Board board, GPoint[] gPoints, int index, boolean isAI) throws CloneNotSupportedException {
+        Symbol winner = board.checkWinner();
+        if (winner == Symbol.X) return -10;
+        if (winner == Symbol.O) return 10;
+        if (board.isFull()) return 0;
+
+        Point[] moves = getPossibleMoves(board);
+        for (int i = 0; i < moves.length; i++) {
+            if (i > 0){
+                // to remove the previous play
+                board.getBoard()[moves[i-1].x][moves[i-1].y] = null;
+            }
+            if (isAI)
+                board.markCell(moves[i].x, moves[i].y, this.getSymbol());
+            else
+                board.markCell(moves[i].x, moves[i].y, this.getOtherSymbol());
+            Board clone = board.clone();
+            gPoints[index].score += miniMax2(clone, gPoints, index, !isAI);
+        }
+
+        return 0;
     }
 
     private int minimax(Board board, int depth, boolean isMaximizing) {
