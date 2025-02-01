@@ -29,7 +29,7 @@ public class MinimaxAIPlayer extends AIPlayer {
     @Override
     public boolean play(Board board) {
         try {
-            int[] bestMove = getBestMove2(board.clone());
+            int[] bestMove = getBestMove2(board);
             return board.markCell(bestMove[0], bestMove[1], this.getSymbol());
         }catch (Exception e){
             System.out.println("EXCEPTION");
@@ -100,9 +100,11 @@ public class MinimaxAIPlayer extends AIPlayer {
         Point[] moves = getPossibleMoves(board);
         GPoint[] gPoints = new GPoint[moves.length];
         for (int i = 0; i < moves.length; i++) {
-            gPoints[i] = new GPoint(new Point(), 0);
+            gPoints[i] = new GPoint(new Point(moves[i].x, moves[i].y), 0);
         }
-        miniMax2(board, gPoints, 0, true);
+        for (int i = 0; i < gPoints.length; i++) {
+            gPoints[i].score += miniMax2(board, gPoints, i, true);
+        }
         int maxScore = Integer.MIN_VALUE;
         GPoint maxGpoint = null;
         for (int i = 0; i < gPoints.length; i++) {
