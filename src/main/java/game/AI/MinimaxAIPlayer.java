@@ -77,7 +77,7 @@ public class MinimaxAIPlayer extends AIPlayer {
         return bestMove;
     }
 
-    public int miniMax2 (Board board, GPoint[] gPoints,int index) throws CloneNotSupportedException {
+    public int miniMax2 (Board board, GPoint[] gPoints, int index, boolean isAI) throws CloneNotSupportedException {
         Symbol winner = board.checkWinner();
         if (winner == Symbol.X) return -10;
         if (winner == Symbol.O) return 10;
@@ -85,9 +85,14 @@ public class MinimaxAIPlayer extends AIPlayer {
 
         Point[] moves = getPossibleMoves(board);
         for (int i = 0; i < moves.length; i++) {
-            board.markCell(moves[i].y, moves[i].x, this.getSymbol());
-            gPoints[index].score += miniMax2(board.clone(), gPoints, index);
+            Board newBoard = board.clone();
+            if (isAI)
+                newBoard.markCell(moves[i].x, moves[i].y, this.getSymbol());
+            else
+                newBoard.markCell(moves[i].x, moves[i].y, this.getOtherSymbol());
+            gPoints[index].score += miniMax2(newBoard, gPoints, index, !isAI);
         }
+
         return 0;
     }
 
@@ -97,7 +102,7 @@ public class MinimaxAIPlayer extends AIPlayer {
         for (int i = 0; i < moves.length; i++) {
             gPoints[i] = new GPoint(new Point(), 0);
         }
-        miniMax2(board, gPoints, 0);
+        miniMax2(board, gPoints, 0, true);
         int maxScore = Integer.MIN_VALUE;
         GPoint maxGpoint = null;
         for (int i = 0; i < gPoints.length; i++) {
@@ -106,7 +111,7 @@ public class MinimaxAIPlayer extends AIPlayer {
                 maxGpoint = gPoints[i];
             }
         }
-        int[] res = {maxGpoint.point.y, maxGpoint.point.x};
+        int[] res = {maxGpoint.point.x, maxGpoint.point.y};
         return res;
     }
 

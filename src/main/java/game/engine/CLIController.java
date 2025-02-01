@@ -49,11 +49,14 @@ public class CLIController extends GameController {
             if (board.isFull()) {
                 break;
             }
-            System.out.println("AI will Make a Move !");
-            playerAI.play(board);
-            if (getStatus() != GameStatus.IN_PROGRESS)
-                break;
-            System.out.println(board);
+            boolean AIPlayed = false;
+            do {
+                System.out.println("AI will Make a Move !");
+                AIPlayed = playerAI.play(board);
+                if (getStatus() != GameStatus.IN_PROGRESS)
+                    break;
+                System.out.println(board);
+            } while (!AIPlayed);
             String input = "";
             Point point = null;
             do {

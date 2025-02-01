@@ -31,11 +31,16 @@ public class Board {
             return false;
         }
     }
-    public Board clone()throws CloneNotSupportedException{
+    public Board clone() throws CloneNotSupportedException{
         Board newBoard = new Board(size);
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                newBoard.getBoard()[i][j] = board[i][j];
+                if (board[i][j] == Symbol.X)
+                    newBoard.getBoard()[i][j] = Symbol.X;
+                else if (board[i][j] == Symbol.O)
+                    newBoard.getBoard()[i][j] = Symbol.O;
+                else
+                    newBoard.getBoard()[i][j] = null;
             }
         }
         return newBoard;
@@ -94,9 +99,9 @@ public class Board {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j] == Symbol.X) {
-                    ans += " " + Symbol.X.toString() + " ";
+                    ans += " " + Symbol.X.name() + " ";
                 }else if (board[i][j] == Symbol.O){
-                    ans += " " + Symbol.O.toString() + " ";
+                    ans += " " + Symbol.O.name() + " ";
                 }
                 else {
                     ans += "[" + count + "]";
