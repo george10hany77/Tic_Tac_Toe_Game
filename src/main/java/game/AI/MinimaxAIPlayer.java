@@ -141,8 +141,9 @@ public class MinimaxAIPlayer extends AIPlayer {
             Board clone = board.clone();
             clone.markCell(moves[i].x, moves[i].y, this.getSymbol());
             Symbol winner = clone.checkWinner();
-            if (winner == Symbol.X) gPoints[i].score += (int)  -(10 + 100*(Math.exp(-2*0)));
-            if (winner == Symbol.O) gPoints[i].score += (int)  (10 + 100*(Math.exp(-2*0)));
+            int depthEquation = (int) (10 + 100*(Math.exp(-2*0)));
+            if (winner == Symbol.X) gPoints[i].score += -depthEquation;
+            if (winner == Symbol.O) gPoints[i].score += depthEquation;
             if (board.isFull()) gPoints[i].score += -1;
             miniMax3(clone, gPoints, i, false, 1);
         }
