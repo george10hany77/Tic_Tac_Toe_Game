@@ -83,8 +83,14 @@ public class MinimaxAIPlayer extends AIPlayer {
         for (int i = 0; i < moves.length; i++) {
             gPoints[i] = new GPoint(new Point(moves[i].x, moves[i].y), 0);
         }
-        for (int i = 0; i < gPoints.length; i++) {
-            miniMax2(board.clone(), gPoints, i, true);
+        for (int i = 0; i < moves.length; i++) {
+            Board clone = board.clone();
+            clone.markCell(moves[i].x, moves[i].y, this.getSymbol());
+            Symbol winner = clone.checkWinner();
+            if (winner == Symbol.X) gPoints[i].score += -10;
+            if (winner == Symbol.O) gPoints[i].score += 10;
+            if (board.isFull()) gPoints[i].score += -1;
+            miniMax2(clone, gPoints, i, false);
         }
         int maxScore = Integer.MIN_VALUE;
         GPoint maxGpoint = null;
@@ -102,7 +108,7 @@ public class MinimaxAIPlayer extends AIPlayer {
         Symbol winner = board.checkWinner();
         if (winner == Symbol.X) return -10;
         if (winner == Symbol.O) return 10;
-        if (board.isFull()) return 0;
+        if (board.isFull()) return -1;
 
         Point[] moves = getPossibleMoves(board);
         for (int i = 0; i < moves.length; i++) {
