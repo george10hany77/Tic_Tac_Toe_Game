@@ -115,7 +115,8 @@ public class MinimaxAIPlayer extends AIPlayer {
             else
                 board.markCell(moves[i].x, moves[i].y, this.getOtherSymbol());
             Board clone = board.clone();
-            gPoints[index].score += miniMax2(clone, gPoints, index, !isAI);
+            int score = miniMax2(clone, gPoints, index, !isAI);
+            gPoints[index].score += score;
         }
 
         return 0;
