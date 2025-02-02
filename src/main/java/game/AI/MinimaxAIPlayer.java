@@ -160,8 +160,9 @@ public class MinimaxAIPlayer extends AIPlayer {
 
     public int miniMax3 (Board board, GPoint[] gPoints, int index, boolean isAI, int depth) throws CloneNotSupportedException {
         Symbol winner = board.checkWinner();
-        if (winner == Symbol.X) return (int) -(10 + 100*(Math.exp(-2*(depth-1))));
-        if (winner == Symbol.O) return (int) (10 + 100*(Math.exp(-2*(depth-1))));
+        int depthEquation = (int) (10 + 100*(Math.exp(-2*(depth-1))));
+        if (winner == Symbol.X) return -depthEquation;
+        if (winner == Symbol.O) return depthEquation;
         if (board.isFull()) return -1;
 
         Point[] moves = getPossibleMoves(board);

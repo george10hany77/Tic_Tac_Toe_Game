@@ -49,12 +49,12 @@ public class CLIController extends GameController {
             System.out.println("AI will Make a Move !");
             AIPlayed = playerAI.play(board);
             if (getStatus() != GameStatus.IN_PROGRESS) {
-                System.out.println(board);
+                System.out.println(board.withColorsToString());
                 if (gameStatus != null)
                     System.out.println("\n" + status.getName() + " !!!");
                 return;
             }
-            System.out.println(board);
+            System.out.println(board.withColorsToString());
         } while (!AIPlayed);
     }
 
@@ -81,7 +81,7 @@ public class CLIController extends GameController {
     public void gameLoopAI() {
         boolean humanFirst = humanPlaysFirst();
         if (humanFirst)
-            System.out.println(board);
+            System.out.println(board.withColorsToString());
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
             if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
@@ -101,7 +101,7 @@ public class CLIController extends GameController {
                 break;
             gameStatus = getStatus();
         }
-        System.out.println(board);
+        System.out.println(board.withColorsToString());
         gameStatus = getStatus();
         if (gameStatus != null)
             System.out.println("\n" + status.getName() + " !!!");
@@ -110,7 +110,7 @@ public class CLIController extends GameController {
     public void gameLoop(){
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
-            System.out.println(board);
+            System.out.println(board.withColorsToString());
             String input = "";
             Point point = null;
             do {
@@ -121,7 +121,7 @@ public class CLIController extends GameController {
             } while (!isValidInput(input) || point == null || !makeMove(point.x, point.y));
             gameStatus = getStatus();
         }
-        System.out.println(board);
+        System.out.println(board.withColorsToString());
         if (gameStatus != null)
             System.out.println("\n" +status.getName() + " !!!");
     }
