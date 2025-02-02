@@ -101,9 +101,9 @@ public class Board {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j] == Symbol.X) {
-                    ans += " " + Symbol.X.toString() + " ";
+                    ans += " " + Symbol.X.name() + " ";
                 }else if (board[i][j] == Symbol.O){
-                    ans += " " + Symbol.O.toString() + " ";
+                    ans += " " + Symbol.O.name() + " ";
                 }
                 else {
                     ans += "[" + count + "]";
