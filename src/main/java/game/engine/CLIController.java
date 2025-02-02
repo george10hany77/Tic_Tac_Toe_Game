@@ -84,19 +84,25 @@ public class CLIController extends GameController {
             System.out.println(board);
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
-            if (board.isFull()) {
+            if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                 break;
-            }
             if (humanFirst) {
                 turnHuman(gameStatus);
+                if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
+                    break;
                 turnAI(gameStatus);
             }else{
                 turnAI(gameStatus);
+                if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
+                    break;
                 turnHuman(gameStatus);
             }
+            if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
+                break;
             gameStatus = getStatus();
         }
         System.out.println(board);
+        gameStatus = getStatus();
         if (gameStatus != null)
             System.out.println("\n" + status.getName() + " !!!");
     }
