@@ -120,6 +120,32 @@ public class Board {
         return ans;
     }
 
+    public String withColorsToString(){
+        String ans = "";
+        int count = 1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == Symbol.X) {
+                    ans += " " + Symbol.X.toString() + " ";
+                }else if (board[i][j] == Symbol.O){
+                    ans += " " + Symbol.O.toString() + " ";
+                }
+                else {
+                    ans += "[" + count + "]";
+                }
+                count++;
+                if (j != size-1){
+                    ans += "|";
+                }
+            }
+            if (i != size-1) {
+                ans += "\n---|---|---\n";
+            }
+        }
+        return ans;
+    }
+
+
     public Symbol checkWinner() {
         // Check rows
         for (int i = 0; i < size; i++) {
