@@ -21,6 +21,15 @@ public abstract class Player {
     public Symbol getSymbol() {
         return this.symbol;
     }
+    public Symbol getOtherSymbol(){
+        if(this.symbol == Symbol.X){
+            return Symbol.O;
+        }
+        if(this.symbol == Symbol.O){
+            return Symbol.X;
+        }
+        return null;
+    }
     public void setSymbol(Symbol symbol){
         this.symbol = symbol;
     }

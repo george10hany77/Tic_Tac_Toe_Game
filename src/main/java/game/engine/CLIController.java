@@ -39,63 +39,78 @@ public class CLIController extends GameController {
         if (playerAI == null) { // that means the AI player is not initialized ,so it is only humans.
             gameLoop();
         }else {
-            gameLoopAI2();
+            gameLoopAI();
         }
     }
 
-    public void gameLoopAI2() {
+    public void turnAI(GameStatus gameStatus){
+        boolean AIPlayed = false;
+        do {
+            System.out.println("AI will Make a Move !");
+            AIPlayed = playerAI.play(board);
+            if (getStatus() != GameStatus.IN_PROGRESS) {
+                System.out.println(board.withColorsToString());
+                if (gameStatus != null)
+                    System.out.println("\n" + status.getName() + " !!!");
+                return;
+            }
+            System.out.println(board.withColorsToString());
+        } while (!AIPlayed);
+    }
+
+    public void turnHuman(GameStatus gameStatus){
+        String input = "";
+        Point point = null;
+        do {
+            System.out.println("Enter cell position: ");
+            input = sc.nextLine();
+            if (isValidInput(input))
+                point = convertNumToPoint(Integer.parseInt(input));
+        } while (!isValidInput(input) || point == null || !player.play(board, point));
+    }
+
+    public boolean humanPlaysFirst() {
+        String input = "";
+        do {
+            System.out.println("Human first or AI first?\n Enter H for Human or A for AI ...");
+            input = sc.nextLine();
+        }while (input.length() != 1 || (input.charAt(0) != 'H' && input.charAt(0) != 'A'));
+        return (input.charAt(0) == 'H');
+    }
+
+    public void gameLoopAI() {
+        boolean humanFirst = humanPlaysFirst();
+        if (humanFirst)
+            System.out.println(board.withColorsToString());
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
-            if (board.isFull()) {
+            if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                 break;
+            if (humanFirst) {
+                turnHuman(gameStatus);
+                if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
+                    break;
+                turnAI(gameStatus);
+            }else{
+                turnAI(gameStatus);
+                if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
+                    break;
+                turnHuman(gameStatus);
             }
-            System.out.println("AI will Make a Move !");
-            playerAI.play(board);
-            if (getStatus() != GameStatus.IN_PROGRESS)
+            if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                 break;
-            System.out.println(board);
-            String input = "";
-            Point point = null;
-            do {
-                System.out.println("Enter cell position: ");
-                input = sc.nextLine();
-                if (isValidInput(input))
-                    point = convertNumToPoint(Integer.parseInt(input));
-            } while (!isValidInput(input) || point == null || !player.play(board, point));
             gameStatus = getStatus();
         }
-        System.out.println(board);
+        System.out.println(board.withColorsToString());
+        gameStatus = getStatus();
         if (gameStatus != null)
             System.out.println("\n" + status.getName() + " !!!");
-    }
-
-    public void gameLoopAI(){
-        GameStatus gameStatus = null;
-        while (getStatus() == GameStatus.IN_PROGRESS) {
-            System.out.println("AI will Make a Move !");
-            playerAI.play(board);
-            if (getStatus() != GameStatus.IN_PROGRESS)
-                break;
-            System.out.println(board);
-            String input = "";
-            Point point = null;
-            do {
-                System.out.println("Enter cell position: ");
-                input = sc.nextLine();
-                if (isValidInput(input))
-                    point = convertNumToPoint(Integer.parseInt(input));
-            } while (!isValidInput(input) || point == null || !player.play(board, point));
-            gameStatus = getStatus();
-        }
-        System.out.println(board);
-        if (gameStatus != null)
-            System.out.println("\n" +status.getName() + " !!!");
     }
 
     public void gameLoop(){
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
-            System.out.println(board);
+            System.out.println(board.withColorsToString());
             String input = "";
             Point point = null;
             do {
@@ -106,7 +121,7 @@ public class CLIController extends GameController {
             } while (!isValidInput(input) || point == null || !makeMove(point.x, point.y));
             gameStatus = getStatus();
         }
-        System.out.println(board);
+        System.out.println(board.withColorsToString());
         if (gameStatus != null)
             System.out.println("\n" +status.getName() + " !!!");
     }
@@ -136,20 +151,6 @@ public class CLIController extends GameController {
         switchPlayer();
         return true;
     }
-
-//    public boolean makeAIMove(){
-//        Random random = new Random();
-//        Point[] possiblePoints = playerAI.getPossibleMoves(board);
-//        if (possiblePoints.length == 0)
-//            return false;
-//        Point move = possiblePoints[random.nextInt(possiblePoints.length)];
-//        return board.markCell(move.x, move.y, playerAI.getSymbol());
-//    }
-
-//    public boolean makeHumanMove(Point move){
-//        return board.markCell(move.x, move.y, player.getSymbol());
-//    }
-
 
     @Override
     public void checkStatus() {
