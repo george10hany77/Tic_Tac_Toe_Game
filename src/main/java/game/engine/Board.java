@@ -93,15 +93,17 @@ public class Board {
         return ans;
     }
 
+    // For debugging issues remove .toString and put .name() ,but you will
+    // sacrifice the marvelous colors in the terminal :(
     public String toString(){
         String ans = "";
         int count = 1;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j] == Symbol.X) {
-                    ans += " " + Symbol.X.name() + " ";
+                    ans += " " + Symbol.X.toString() + " ";
                 }else if (board[i][j] == Symbol.O){
-                    ans += " " + Symbol.O.name() + " ";
+                    ans += " " + Symbol.O.toString() + " ";
                 }
                 else {
                     ans += "[" + count + "]";

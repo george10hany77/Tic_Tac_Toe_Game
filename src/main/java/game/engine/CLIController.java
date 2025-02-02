@@ -43,32 +43,57 @@ public class CLIController extends GameController {
         }
     }
 
+    public void turnAI(GameStatus gameStatus){
+        boolean AIPlayed = false;
+        do {
+            System.out.println("AI will Make a Move !");
+            AIPlayed = playerAI.play(board);
+            if (getStatus() != GameStatus.IN_PROGRESS) {
+                System.out.println(board);
+                if (gameStatus != null)
+                    System.out.println("\n" + status.getName() + " !!!");
+                return;
+            }
+            System.out.println(board);
+        } while (!AIPlayed);
+    }
+
+    public void turnHuman(GameStatus gameStatus){
+        String input = "";
+        Point point = null;
+        do {
+            System.out.println("Enter cell position: ");
+            input = sc.nextLine();
+            if (isValidInput(input))
+                point = convertNumToPoint(Integer.parseInt(input));
+        } while (!isValidInput(input) || point == null || !player.play(board, point));
+    }
+
+    public boolean humanPlaysFirst() {
+        String input = "";
+        do {
+            System.out.println("Human first or AI first?\n Enter H for Human or A for AI ...");
+            input = sc.nextLine();
+        }while (input.length() != 1 || (input.charAt(0) != 'H' && input.charAt(0) != 'A'));
+        return (input.charAt(0) == 'H');
+    }
+
     public void gameLoopAI() {
+        boolean humanFirst = humanPlaysFirst();
+        if (humanFirst)
+            System.out.println(board);
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
             if (board.isFull()) {
                 break;
             }
-            boolean AIPlayed = false;
-            do {
-                System.out.println("AI will Make a Move !");
-                AIPlayed = playerAI.play(board);
-                if (getStatus() != GameStatus.IN_PROGRESS) {
-                    System.out.println(board);
-                    if (gameStatus != null)
-                        System.out.println("\n" + status.getName() + " !!!");
-                    return;
-                }
-                System.out.println(board);
-            } while (!AIPlayed);
-            String input = "";
-            Point point = null;
-            do {
-                System.out.println("Enter cell position: ");
-                input = sc.nextLine();
-                if (isValidInput(input))
-                    point = convertNumToPoint(Integer.parseInt(input));
-            } while (!isValidInput(input) || point == null || !player.play(board, point));
+            if (humanFirst) {
+                turnHuman(gameStatus);
+                turnAI(gameStatus);
+            }else{
+                turnAI(gameStatus);
+                turnHuman(gameStatus);
+            }
             gameStatus = getStatus();
         }
         System.out.println(board);
