@@ -48,13 +48,6 @@ public class CLIController extends GameController {
         do {
             System.out.println("AI will Make a Move !");
             AIPlayed = playerAI.play(board);
-            if (getStatus() != GameStatus.IN_PROGRESS) {
-                System.out.println(board.withColorsToString());
-                if (gameStatus != null)
-                    System.out.println("\n" + status.getName() + " !!!");
-                return;
-            }
-            System.out.println(board.withColorsToString());
         } while (!AIPlayed);
     }
 
@@ -80,13 +73,12 @@ public class CLIController extends GameController {
 
     public void gameLoopAI() {
         boolean humanFirst = humanPlaysFirst();
-        if (humanFirst)
-            System.out.println(board.withColorsToString());
         GameStatus gameStatus = null;
         while (getStatus() == GameStatus.IN_PROGRESS) {
             if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                 break;
             if (humanFirst) {
+                System.out.println(board.withColorsToString());
                 turnHuman(gameStatus);
                 if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                     break;
@@ -95,6 +87,7 @@ public class CLIController extends GameController {
                 turnAI(gameStatus);
                 if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
                     break;
+                System.out.println(board.withColorsToString());
                 turnHuman(gameStatus);
             }
             if (board.isFull() || getStatus() != GameStatus.IN_PROGRESS)
