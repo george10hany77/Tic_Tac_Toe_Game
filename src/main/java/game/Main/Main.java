@@ -10,7 +10,6 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println(Colors.PURPLE.colorText("Tic-Tac-Toe!\n"));
-        System.out.println(GameStatus.DRAW.ordinal());
         CLIController cliController = new CLIController();
         cliController.startGame();
     }

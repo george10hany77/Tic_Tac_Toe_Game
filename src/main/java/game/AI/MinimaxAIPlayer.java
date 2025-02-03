@@ -7,11 +7,12 @@ import java.util.ArrayList;
 
 public class MinimaxAIPlayer extends AIPlayer {
 
-    private static double A = 1.4;
-    private static double B = -2;
-    private static double WINSCORE = 10;
-    private static double LOSESCORE = 10;
-    private static double DRAWSCORE = 1;
+    // 100*A^(Bx)
+    private static double A = 20;
+    private static double B = -0.3;
+    private static int WINSCORE = 10;
+    private static int LOSESCORE = 10;
+    private static int DRAWSCORE = 1;
 
     public MinimaxAIPlayer(Symbol symbol) {
         super(symbol);
@@ -137,13 +138,12 @@ public class MinimaxAIPlayer extends AIPlayer {
             Board clone = board.clone();
             clone.markCell(moves[i].x, moves[i].y, this.getSymbol());
             Symbol winner = clone.checkWinner();
-            double depthEquation = (10 + 100*(Math.pow(A, B*0)));
-            if (winner == Symbol.X) gPoints[i].score += (-depthEquation);
-            if (winner == Symbol.O) gPoints[i].score += (depthEquation);
-            if (board.isFull()) gPoints[i].score += (-1);
+            if (winner == Symbol.X) gPoints[i].score += -1*((double) (LOSESCORE + 100*(Math.pow(A, B*(0)))));;
+            if (winner == Symbol.O) gPoints[i].score += ((double) (WINSCORE + 100*(Math.pow(A, B*(0)))));
+            if (board.isFull()) gPoints[i].score += -1*DRAWSCORE;
             miniMax3(clone, gPoints, i, false, 1);
         }
-        double maxScore = Double.MIN_VALUE;
+        double maxScore = Integer.MIN_VALUE;
         GPoint maxGpoint = null;
         for (int i = 0; i < gPoints.length; i++) {
             if (gPoints[i].score > maxScore) {
@@ -157,10 +157,9 @@ public class MinimaxAIPlayer extends AIPlayer {
 
     public double miniMax3 (Board board, GPoint[] gPoints, int index, boolean isAI, int depth) throws CloneNotSupportedException {
         Symbol winner = board.checkWinner();
-        double depthEquation = (10 + 100*(Math.pow(A, B*(depth-1))));
-        if (winner == Symbol.X) return (-depthEquation);
-        if (winner == Symbol.O) return (depthEquation);
-        if (board.isFull()) return -1;
+        if (winner == Symbol.X) return -1*((double) (LOSESCORE + 100*(Math.pow(A, B*(depth-1)))));
+        if (winner == Symbol.O) return    ((double) (WINSCORE + 100*(Math.pow(A, B*(depth-1)))));
+        if (board.isFull()) return -1*DRAWSCORE;
 
         Point[] moves = getPossibleMoves(board);
         for (int i = 0; i < moves.length; i++) {
