@@ -1,21 +1,17 @@
 package game.AI;
-
 import game.engine.Board;
 import game.engine.Symbol;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-class GPoint{
-    public Point point;
-    public int score;
-    public GPoint(Point point, int score){
-        this.point = point;
-        this.score = score;
-    }
-}
-
 public class MinimaxAIPlayer extends AIPlayer {
+
+    private static double A = 1.4;
+    private static double B = -2;
+    private static double WINSCORE = 10;
+    private static double LOSESCORE = 10;
+    private static double DRAWSCORE = 1;
 
     public MinimaxAIPlayer(Symbol symbol) {
         super(symbol);
@@ -98,7 +94,7 @@ public class MinimaxAIPlayer extends AIPlayer {
         GPoint maxGpoint = null;
         for (int i = 0; i < gPoints.length; i++) {
             if (gPoints[i].score > maxScore) {
-                maxScore = gPoints[i].score;
+                maxScore = (int) gPoints[i].score;
                 maxGpoint = gPoints[i];
             }
         }
@@ -141,13 +137,13 @@ public class MinimaxAIPlayer extends AIPlayer {
             Board clone = board.clone();
             clone.markCell(moves[i].x, moves[i].y, this.getSymbol());
             Symbol winner = clone.checkWinner();
-            int depthEquation = (int) (10 + 100*(Math.exp(-2*0)));
-            if (winner == Symbol.X) gPoints[i].score += -depthEquation;
-            if (winner == Symbol.O) gPoints[i].score += depthEquation;
-            if (board.isFull()) gPoints[i].score += -1;
+            double depthEquation = (10 + 100*(Math.pow(A, B*0)));
+            if (winner == Symbol.X) gPoints[i].score += (-depthEquation);
+            if (winner == Symbol.O) gPoints[i].score += (depthEquation);
+            if (board.isFull()) gPoints[i].score += (-1);
             miniMax3(clone, gPoints, i, false, 1);
         }
-        int maxScore = Integer.MIN_VALUE;
+        double maxScore = Double.MIN_VALUE;
         GPoint maxGpoint = null;
         for (int i = 0; i < gPoints.length; i++) {
             if (gPoints[i].score > maxScore) {
@@ -159,11 +155,11 @@ public class MinimaxAIPlayer extends AIPlayer {
         return res;
     }
 
-    public int miniMax3 (Board board, GPoint[] gPoints, int index, boolean isAI, int depth) throws CloneNotSupportedException {
+    public double miniMax3 (Board board, GPoint[] gPoints, int index, boolean isAI, int depth) throws CloneNotSupportedException {
         Symbol winner = board.checkWinner();
-        int depthEquation = (int) (10 + 100*(Math.exp(-2*(depth-1))));
-        if (winner == Symbol.X) return -depthEquation;
-        if (winner == Symbol.O) return depthEquation;
+        double depthEquation = (10 + 100*(Math.pow(A, B*(depth-1))));
+        if (winner == Symbol.X) return (-depthEquation);
+        if (winner == Symbol.O) return (depthEquation);
         if (board.isFull()) return -1;
 
         Point[] moves = getPossibleMoves(board);
@@ -177,7 +173,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             else
                 board.markCell(moves[i].x, moves[i].y, this.getOtherSymbol());
             Board clone = board.clone();
-            int score = miniMax3(clone, gPoints, index, !isAI, depth+1);
+            double score = miniMax3(clone, gPoints, index, !isAI, depth+1);
             gPoints[index].score += score;
         }
 
