@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class MinimaxAIPlayer extends AIPlayer {
 
     // 100*A^(Bx)
-    private static double A = 20;
-    private static double B = -0.3;
-    private static int WINSCORE = 10;
-    private static int LOSESCORE = 10;
-    private static int DRAWSCORE = 1;
+    private static final double A = 30;
+    private static final double B = -0.2;
+    private static final int WINSCORE = 10;
+    private static final int LOSESCORE = 10;
+    private static final int DRAWSCORE = 1;
 
     public MinimaxAIPlayer(Symbol symbol) {
         super(symbol);
